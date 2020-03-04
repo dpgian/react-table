@@ -20,7 +20,7 @@ function App() {
         columns: [
           {
             Header: 'Name',
-            accessor: 'show.type'
+            accessor: 'show.name'
           }
         ]
       },

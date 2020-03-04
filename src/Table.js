@@ -1,5 +1,5 @@
-import React from 'react'
-import { useTable } from 'react-table'
+import React, { useState } from 'react'
+import { useTable, useFilters } from 'react-table'
 import './Table.css'
 
 export default function Table({ columns, data }) {
@@ -9,36 +9,52 @@ export default function Table({ columns, data }) {
         getTableBodyProps,
         headerGroups,
         rows,
-        prepareRow
+        prepareRow,
+        setFilter
     } = useTable({
         columns,
         data
-    })
+    }, useFilters)
+
+    const [search, setSearch] = useState('')
+
+    const handleSearch = e => {
+        const value = e.target.value || undefined
+        setFilter('show.name', search)
+        setSearch(value)
+    }
 
     return (
-        <table {...getTableProps()}>
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
+        <>
+            <input 
+                value={search}
+                onChange={handleSearch}
+                placeholder='Search'
+            />
+            <table {...getTableProps()}>
+                <thead>
+                    {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            ))}
                         </tr>
-                    )
-                })}
-            </tbody>
-        </table>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row)
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+        </>
     )
 
 }
